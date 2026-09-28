@@ -62,7 +62,6 @@ from .ft.checkpoint_transfer import send_ckpt as _send_ckpt
 from .ft.in_memory_checkpoint import InMemoryCheckpointManager
 from .ft.indep_dp import reconfigure_indep_dp_group
 from .initialize import init, is_first_replica_megatron_main_rank
-from .misc_utils import maybe_hide_te_flash_attn_4
 from .model import TrainStepOutcome, forward_only, initialize_model_and_optimizer, save, train
 from .named_weights import named_params_and_buffers
 from .parallel import verify_megatron_parallel_state
@@ -107,6 +106,8 @@ class MegatronTrainRayActor(TrainRayActor):
         self.weight_updater: WeightUpdater | None = None
         self.snapshot_publisher: SnapshotPublisher | None = None
         monkey_patch_torch_dist()
+        from .misc_utils import maybe_hide_te_flash_attn_4
+
         maybe_hide_te_flash_attn_4(args)
 
         super().init(args, role, with_ref, with_opd_teacher=with_opd_teacher)
